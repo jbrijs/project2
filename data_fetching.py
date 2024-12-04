@@ -11,12 +11,13 @@ def fetch_and_save_data(ticker):
     ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_API_KEY')
 
     
-    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&outputsize=full&apikey={ALPHA_VANTAGE_API_KEY}"
+    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&outputsize=full&apikey={ALPHA_VANTAGE_API_KEY}"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
+        print(data)
         time_series = data.get('Time Series (Daily)', {})
-        filename = f"data/{ticker}_daily_data.csv"
+        filename = f"data/{ticker}raw_daily_data.csv"
         keys = ['time_stamp', 'open', 'high', 'low', 'close', 'volume']
         with open(filename, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=keys)
