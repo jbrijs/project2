@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import pandas as pd
 from torch.utils.data import DataLoader, TensorDataset
+import argparse
 
 
 class LSTMModel(nn.Module):
@@ -50,10 +51,12 @@ def train_test_split_simple(ticker, train_ratio=0.8):
 
     return X_train, X_test, y_train, y_test
 
-def save_model(model):
-     torch.save(model.state_dict(), f"./models/AAPL_model.pth")
 
-def train_simple_model(X_train, y_train, X_test, y_test, batch_size=32, epochs=1000):
+def save_model(model, ticker):
+    torch.save(model.state_dict(), f"./models/{ticker}_model.pth")
+
+
+def train_simple_model(X_train, X_test, y_train, y_test, ticker, batch_size=32, epochs=1000):
 
     dataset = TensorDataset(X_train, y_train)
     train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
@@ -66,7 +69,7 @@ def train_simple_model(X_train, y_train, X_test, y_test, batch_size=32, epochs=1
 
     for epoch in range(epochs):
         for i, (data, target) in enumerate(train_loader):
-            data = data.unsquees(2)
+            data = data.unsqueeze(2)
 
             optimizer.zero_grad()
 
@@ -78,7 +81,8 @@ def train_simple_model(X_train, y_train, X_test, y_test, batch_size=32, epochs=1
             optimizer.step()
 
             if i % 10 == 0:
-                print(f'Epoch: {epoch+1}, Batch: {i+1} Loss: {loss.item():.4f}')
+                print(
+                    f'Epoch: {epoch+1}, Batch: {i+1} Loss: {loss.item():.4f}')
 
     model.eval()
     with torch.no_grad():
@@ -86,14 +90,31 @@ def train_simple_model(X_train, y_train, X_test, y_test, batch_size=32, epochs=1
         predictions = model(X_test)
         test_loss = criterion(predictions, y_test)
 
-
     print(f'Test Loss: {test_loss.item():.4f}')
 
+    # Convert to NumPy for analysis
+    predictions_np = predictions.squeeze().cpu().numpy()
+    y_test_np = y_test.squeeze().cpu().numpy()
+
+    # Save to CSV
+    results_df = pd.DataFrame({
+        'Predictions': predictions_np,
+        'Ground Truth': y_test_np
+    })
+    results_df.to_csv(f"./results/{ticker}_predictions.csv", index=False)
+    print(f"Predictions saved to ./results/{ticker}_predictions.csv")
+
     print(f'Saving model...')
-    save_model(model)
+    save_model(model, ticker)
     print('Model saved')
 
 
 if __name__ == '__main__':
-    X, y = train_test_split_simple('AAPL')
-    train_simple_model(X, y)
+    parser = argparse.ArgumentParser(
+        description='Train a model for a specific ticker')
+    parser.add_argument('ticker', type=str, help='Stock ticker symbol')
+    args = parser.parse_args()
+    ticker = args.ticker
+    X_train, X_test, y_train, y_test = train_test_split_simple(ticker)
+    train_simple_model(X_train=X_train, X_test=X_test,
+                       y_train=y_train, y_test=y_test, ticker=ticker)
