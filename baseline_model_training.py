@@ -99,7 +99,12 @@ with torch.no_grad():
     test_plot[train_size+lookback:len(timeseries)] = best_model(X_test)[:, -1, :]
 
 # Plot the results
-plt.plot(timeseries)
-plt.plot(train_plot, c='r')
-plt.plot(test_plot, c='g')
+plt.plot(timeseries, label='Actual Close Price')
+plt.plot(train_plot, c='r', label='Train Predictions')
+plt.plot(test_plot, c='g', label='Test Predictions')
+
+plt.legend()
+
+plt.savefig('baseline_predictions_plot.png')
+
 plt.show()
