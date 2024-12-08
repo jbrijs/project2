@@ -52,7 +52,7 @@ loader = DataLoader(TensorDataset(X_train, y_train), shuffle=True, batch_size=8)
 # Variables to track the best model
 best_test_rmse = float('inf')  # Initialize with a large value
 
-epochs = 2000
+epochs = 500
 for epoch in range(epochs):
     model.train()
     for X_batch, y_batch in loader:
