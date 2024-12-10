@@ -22,7 +22,7 @@ def create_indicators():
     df.info()
 
     # Save to csv without duplicating the time_stamp feature
-    df.to_csv('./data/AAPL_techincal_indicators.csv', index=False)
+    df.to_csv('./data/AAPL_technical_indicators.csv', index=False)
 
 if __name__ == '__main__':
     create_indicators()
