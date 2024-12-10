@@ -55,7 +55,7 @@ def train_model(X_train, y_train, model, optimizer, loss_fn, epochs=100, batch_s
     for epoch in range(epochs):
         epoch_loss = 0
         for X_batch, y_batch in loader:
-            X_batch = X_batch.unsqueeze(-1)
+            X_batch = X_batch
             y_batch = y_batch
 
             optimizer.zero_grad()
@@ -88,16 +88,16 @@ model.eval()
 
 with torch.no_grad():
     # Reshape inputs for LSTM ([samples, lookback, features])
-    X_train_input = X_train.unsqueeze(-1)  # Add feature dimension
-    X_test_input = X_test.unsqueeze(-1)
+    X_train_input = X_train
+    X_test_input = X_test
 
     # Predictions for training data
-    train_predictions = model(X_train_input).squeeze(-1).numpy()
+    train_predictions = model(X_train_input)
     train_plot = np.ones_like(timeseries) * np.nan
     train_plot[lookback:train_size] = train_predictions[:, -1]
 
     # Predictions for testing data
-    test_predictions = model(X_test_input).squeeze(-1).numpy()
+    test_predictions = model(X_test_input)
     test_plot = np.ones_like(timeseries) * np.nan
     test_plot[train_size + lookback:] = test_predictions[:, -1]
 
@@ -114,6 +114,6 @@ plt.legend()
 plt.grid()
 
 # Save and show the plot
-plt.savefig('baseline_predictions_plot.png')
+plt.savefig('cv_baseline_predictions_plot.png')
 plt.show()
 

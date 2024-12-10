@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader, TensorDataset
 df = pd.read_csv('./data/AAPL_split_daily_data.csv')
 timeseries = df[["close"]].iloc[::-1].values.astype('float32')
 
-train_size = int(len(timeseries) * 0.8)
+train_size = int(len(timeseries) * 0.9)
 test_size = len(timeseries) - train_size
 train, test = timeseries[:train_size], timeseries[train_size:]
 
