@@ -2,7 +2,6 @@
 
 ---
 
-This project is a little bit of a mess. 
 At the start, most of my data preprocessing and model training were done in python scripts. Once all the data was fetched and the baseline was trained, I decided to do more formal preprocessing in the `DataPreprocessing.ipynb` notebook and training in the `Model.ipynb` notebook.
 
 To run any of the scripts, it should be as easy as running a command like:
