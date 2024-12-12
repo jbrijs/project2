@@ -80,6 +80,7 @@ for epoch in range(epochs):
         best_test_rmse = test_rmse
         torch.save(model.state_dict(), 'best_baseline_model.pth')  # Save the model state
 
+print(best_test_rmse)
 
 best_model = BaseLineMdel()
 best_model.load_state_dict(torch.load('best_baseline_model.pth'))
